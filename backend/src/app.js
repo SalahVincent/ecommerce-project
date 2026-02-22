@@ -5,12 +5,17 @@ import sequelize from './config/db.js'
 import './models/product.js'
 import { errorHandler } from './middleware/errorMiddleware.js'
 import productRoutes from './routes/ProductRoutes.js'
+import YAML from 'yamljs'
+import swaggerUi from 'swagger-ui-express'
 
 dotenv.config()
 
 const app = express()
+const swaggerDocument = YAML.load('./swagger.yaml');
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-app.use(cors())
+app.use(cors());
+app.use(express.json());
 app.use(express.json())
 
 app.use('/api/products', productRoutes)
