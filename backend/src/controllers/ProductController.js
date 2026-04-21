@@ -15,18 +15,8 @@ export const productController = {
 
   getAllProducts: async (req, res) => {
     try {
-      const { category, search } = req.query;
-      let queryOptions = { where: {} };
-
-      if (category) {
-        queryOptions.where.category = category;
-      }
-
-      if (search) {
-        queryOptions.where.name = { [Op.iLike]: `%${search}%` };
-      }
-
-      const products = await Product.findAll(queryOptions);
+      
+      const products = await Product.findAll(req.params);
       res.status(200).json(products);
     } catch (error) {
       res.status(500).json({ error: 'Server error while fetching products' });

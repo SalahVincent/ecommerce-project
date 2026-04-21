@@ -40,17 +40,6 @@ paths:
     get:
       summary: Get all products
       description: Retrieve a list of products with optional search and category filtering.
-      parameters:
-        - in: query
-          name: category
-          schema:
-            type: string
-          description: Filter by category name
-        - in: query
-          name: search
-          schema:
-            type: string
-          description: Search by product name
       responses:
         200:
           description: A list of products
