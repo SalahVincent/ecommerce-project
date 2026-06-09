@@ -3,23 +3,41 @@ import { Op } from 'sequelize';
 
 export const productController = {
 
-  createProduct: async (req, res) => {
+  createProduct: async (req, res, next) => {
     try {
-      const product = await Product.create(req.body);
-      res.status(201).json(product);
-    }
-    catch (error) {
-      res.status(400).json({ error: 'Failed to create product. Check your data.' });
+      const { name, category, price, description, imageUrl } = req.body;
+      
+      const newProduct = await Product.create({
+        name,
+        category,
+        price,
+        description,
+        imageUrl
+      });
+
+      res.status(201).json(newProduct);
+    } catch (error) {
+      next(error);
     }
   },
 
-  getAllProducts: async (req, res) => {
+  getAllProducts: async (req, res, next) => {
     try {
-      
-      const products = await Product.findAll(req.params);
+      const { category, search } = req.query;
+      let queryOptions = { where: {} };
+
+      if (category) {
+        queryOptions.where.category = { [Op.iLike]: `%${category}%` };
+      }
+
+      if (search) {
+        queryOptions.where.name = { [Op.iLike]: `%${search}%` };
+      }
+
+      const products = await Product.findAll(queryOptions);
       res.status(200).json(products);
     } catch (error) {
-      res.status(500).json({ error: 'Server error while fetching products' });
+      next(error);
     }
   },
   
